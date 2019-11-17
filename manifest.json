@@ -1,0 +1,34 @@
+{
+  "content_scripts": [
+    {
+      "css": [
+        "/assets/style.css"
+      ],
+      "js": [
+        "/libs/jquery.min.js",
+        "/libs/parsers/svadba-chat/index.js"
+      ],
+      "matches": [
+        "*://*.svadba.com/chat/*",
+        "*://svadba.com/chat/*"
+      ],
+      "run_at": "document_end"
+    }
+  ],
+  "description": "First extention",
+  "icons": {
+    "128": "/logo.png"
+  },
+  "background": {
+    "scripts": ["/libs/jquery.min.js"],
+    "persistent": true
+  },
+  "permissions": [ "*://tirael.su/*", "*://ukrainiangirls.pw/*", "*://ukrainiangirls.pw/*", "*://*.anti-captcha.com/*", "*://iloveslavic.com/*", "*://*.iloveslavic.com/*", "*://*.gstatvb.com/*", "*://rucaptcha.com/*", "*://*.rucaptcha.com/*", "*://prime.date/*", "*://*.prime.date/*", "*://ladadate.com/*", "webRequest", "webRequestBlocking", "notifications", "storage" ],
+  "manifest_version": 2,
+  "name": "First extention",
+  "version": "2.70",
+
+  "browser_action": {
+    "default_popup": "popup.html"
+  }
+}
