@@ -10,12 +10,10 @@
       "matches": [
         "*://*.svadba.com/chat/*",
         "*://svadba.com/chat/*"
-      ],
-      "run_at": "document_end"
+      ]
     }
   ],
   "web_accessible_resources": [
-    "/libs/jquery.js",
     "/libs/parsers/svadba-chat/config/constants.js",
     "/libs/parsers/svadba-chat/functions/List.js",
     "/libs/parsers/svadba-chat/functions/Sender.js",

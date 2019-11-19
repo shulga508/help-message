@@ -10,6 +10,7 @@
 // // //export
 export const INTERVAL_BETWEEN_MESSANGES = 4000;
 export const INTERVAL_BETWEEN_QUEUES = 60000;
+export const COUNT_PER_MINUTE = 5;
 
 export const GET_ONLINE_USERS_API_URL = '//www.svadba.com/chat/updates/onlines/everyone/?onlines=99999999999999999';
 export const SEND_MESSAGE_API_URL = location.protocol + "//" + location.host + "/chat/send-message/";

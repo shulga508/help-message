@@ -1,10 +1,12 @@
 
 
 'use strict';
-const head = document.head || document.getElementsByTagName("head")[0] || document.documentElement;
+window.addEventListener('load', function () {
+    const head = document.body || document.getElementsByTagName("body")[0];
 
-const script = document.createElement('script');
-script.setAttribute("type", "module");
-script.setAttribute("src", chrome.runtime.getURL('/libs/parsers/svadba-chat/app.js'));
+    const script = document.createElement('script');
+    script.setAttribute("type", "module");
+    script.setAttribute("src", chrome.runtime.getURL('/libs/parsers/svadba-chat/app.js'));
 
-head.insertBefore(script, head.lastChild);
+    head.appendChild(script);
+})

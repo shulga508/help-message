@@ -1,76 +1,80 @@
-import {INTERVAL_BETWEEN_MESSANGES, INTERVAL_BETWEEN_QUEUES, SEND_MESSAGE_API_URL} from "../config/constants.js";
+import {INTERVAL_BETWEEN_MESSANGES, INTERVAL_BETWEEN_QUEUES, SEND_MESSAGE_API_URL, COUNT_PER_MINUTE} from "../config/constants.js";
+
 
 class Sender
 {
     constructor(users){
         this.users = users;
+        console.log(this.users);
+        this.counter = 0;
     }
 
-    send(message) {
+    send(message = 'hello') {
+        let self = this;
 
-        console.log(this.users);
-        var processUser = () => {
-            let notProcessedUsers = this.users.filter(function (elem) {
-                console.log(elem);
-                return typeof elem.processed == 'undefined';
-            })
-            console.log(notProcessedUsers);
-            if (notProcessedUsers.length === 0) {
-                clearInterval(messagesInterval);
-                clearInterval(queueInterval);
-                return;
-            }
-            let currentUser = notProcessedUsers[0].member;
-            console.log(currentUser);
-            let formattedMessage = this.formatMessage(message, currentUser.name);
-            let formData = new FormData()
-            formData.append('tag', currentUser.id);
-            formData.append('source', 'lc');
-            formData.append('message', formattedMessage);
-            let ddata = {
-                'tag': currentUser.id,
-                'source': 'lc',
-                'message': 'Hello',
-            }
-            console.log(formData.get('message'));
-            // let res = fetch(SEND_MESSAGE_API_URL + currentUser.id, {
-            //     method: 'POST',
-            //     body: JSON.stringify(ddata),
-            //    headers: {
-            //   //'Content-Type': 'application/json',
-            //           'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            //     },
-            // }).then(res => res.json()).then(data => this.users.find(function (elem) {
-            //     console.log(elem);
-            //     return elem.member === currentUser.id
-            // }).processed = true);
-            var http = new XMLHttpRequest();
-
-            var params = 'tag=' + ddata.tag + '&source=lc&message=Hello' + message;
-            http.open('POST', SEND_MESSAGE_API_URL + currentUser.id, true);
-
-
-            http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-
-            http.onreadystatechange =  () => {
-                if (http.readyState == 4 && http.status == 200) {
-                    this.users.find(function (elem) {
+        var sendMessages = () => {
+            console.log(this.users);
+            for (var i = 0; i < COUNT_PER_MINUTE; i++) {
+                console.log(self.users);
+                setTimeout(() => {
+                    console.log(self.users);
+                    let notProcessedUsers = self.users.filter(function (elem) {
                         console.log(elem);
-                        return elem.member === currentUser.id
-                    }).processed = true
-                }
-            };
-            http.send(params);
-        }
+                        return typeof elem.member.processed == 'undefined';
+                    })
+                    console.log(notProcessedUsers);
 
-            var messagesInterval = setInterval(processUser, INTERVAL_BETWEEN_MESSANGES);
-            var queueInterval = setInterval(messagesInterval, INTERVAL_BETWEEN_QUEUES);
+
+                    if (notProcessedUsers.length === 0) {
+                        clearInterval(self.queueInterval);
+                        return;
+                    }
+                    let currentUser = notProcessedUsers[0].member;
+                    console.log(currentUser);
+                    let formattedMessage = self.formatMessage(message, currentUser.name);
+                    let formData = new FormData();
+                    formData.append('tag', currentUser.id);
+                    formData.append('source', 'lc');
+                    formData.append('message', formattedMessage);
+                    let ddata = {
+                        'tag': currentUser.id,
+                        'source': 'lc',
+                        'message': 'Hello',
+                    }
+                    console.log(formData.get('message'));
+                    var http = new XMLHttpRequest();
+
+                    var params = 'tag=' + ddata.tag + '&source=lc&message=Hello' + message;
+                    http.open('POST', SEND_MESSAGE_API_URL + currentUser.id, true);
+
+
+                    http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+                    http.onreadystatechange = () => {
+
+                        self.users.map(function (elem, index) {
+                            if (elem.member.id === currentUser.id) {
+                                self.users[index].member.processed = true;
+                                console.log(elem);
+
+                            }
+
+                        }).processed = true
+
+                    };
+                    http.send(params);
+                    self.counter++;
+                }, i * INTERVAL_BETWEEN_MESSANGES)
+            }
+        }
+        sendMessages();
+        this.queueInterval = setInterval(sendMessages, INTERVAL_BETWEEN_QUEUES);
 
 
     }
 
     formatMessage(message, name) {
-        let re = /{name}/gi
+        let re = '{name}';
         return message.replace(re, name);
     }
 
